@@ -29,7 +29,7 @@ public class TodoListController {
     @PostMapping("/update")
     public Todo updateTodoListItem(@RequestParam("id") Long id, @RequestParam("content") String content, @RequestParam("status") boolean status) throws BadRequestException {
         if(content.equals("")) {
-            throw new BadRequestException();
+            throw new BadRequestException("The content should not be empty");
         }
         Todo todoItem = new Todo(id, status, content);
         return todoListService.save(todoItem);

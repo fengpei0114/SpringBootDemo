@@ -29,16 +29,16 @@ public class TodoListService{
 
     @SneakyThrows
     public void delete(Long id) {
-        findById(id).orElseThrow(() -> new NoDataFoundException());
+        findById(id).orElseThrow(() -> new NoDataFoundException("Can not found this id"));
         repository.deleteById(id);
     }
     public Optional<Todo> findById(Long id) { return repository.findById(id);}
 
     @SneakyThrows
     private void checkDbStatus(Long id, Boolean status) {
-        Todo todoItem = findById(id).orElseThrow(() -> new NoDataFoundException());
+        Todo todoItem = findById(id).orElseThrow(() -> new NoDataFoundException("Can not found this id"));
         if(todoItem.getStatus() == status){
-            throw new ConflictException();
+            throw new ConflictException("The status is different with database");
         }
     }
 }
