@@ -4,6 +4,7 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.model.Todo;
 import com.example.demo.service.TodoListService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,24 +16,24 @@ public class TodoListController {
     private TodoListService todoListService;
 
     @GetMapping("/getAll")
-    public List<Todo> findAllTodoList() {
+    public ResponseEntity<List<Todo>> findAllTodoList() {
          List<Todo> todoList = todoListService.findAll();
-         return todoList;
+         return ResponseEntity.ok(todoList);
     }
 
     @PostMapping("/addTodo")
-    public Todo addTodoListItem(@RequestParam("content") String content, @RequestParam("status") boolean status) {
+    public ResponseEntity<Todo> addTodoListItem(@RequestParam("content") String content, @RequestParam("status") boolean status) {
         Todo todoItem = new Todo(status, content);
-        return todoListService.save(todoItem);
+        return ResponseEntity.ok(todoListService.save(todoItem));
     }
 
     @PostMapping("/update")
-    public Todo updateTodoListItem(@RequestParam("id") Long id, @RequestParam("content") String content, @RequestParam("status") boolean status) throws BadRequestException {
+    public ResponseEntity<Todo> updateTodoListItem(@RequestParam("id") Long id, @RequestParam("content") String content, @RequestParam("status") boolean status) throws BadRequestException {
         if(content.equals("")) {
             throw new BadRequestException("The content should not be empty");
         }
         Todo todoItem = new Todo(id, status, content);
-        return todoListService.update(todoItem);
+        return ResponseEntity.ok(todoListService.update(todoItem));
     }
 
     @GetMapping("/delete")
