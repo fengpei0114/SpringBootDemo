@@ -1,20 +1,20 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.ConflictException;
 import com.example.demo.exception.NoDataFoundException;
 import com.example.demo.model.Todo;
 import com.example.demo.repository.TodoRepository;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class TodoListService{
-    @Autowired
-    private TodoRepository repository;
+public class TodoListService implements ITodoListService{
+    private final TodoRepository repository;
+
+    public TodoListService(TodoRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Todo> findAll() {
         List<Todo> todoList = repository.findAll();
@@ -22,23 +22,24 @@ public class TodoListService{
     }
 
     public Todo save(Todo todo) {
-        checkDbStatus(todo.getId(), todo.getStatus());
+        Todo resultTodo = repository.save(todo);
+        return resultTodo;
+    }
+
+    public Todo update(Todo todo){
+        verifyTodoItemId(todo.getId());
         Todo resultTodo = repository.save(todo);
         return resultTodo;
     }
 
     @SneakyThrows
     public void delete(Long id) {
-        findById(id).orElseThrow(() -> new NoDataFoundException("Can not found this id"));
+        verifyTodoItemId(id);
         repository.deleteById(id);
     }
-    public Optional<Todo> findById(Long id) { return repository.findById(id);}
 
     @SneakyThrows
-    private void checkDbStatus(Long id, Boolean status) {
-        Todo todoItem = findById(id).orElseThrow(() -> new NoDataFoundException("Can not found this id"));
-        if(todoItem.getStatus() == status){
-            throw new ConflictException("The status is different with database");
-        }
+    private void verifyTodoItemId(Long id) {
+        repository.findById(id).orElseThrow(() -> new NoDataFoundException("Can not found this id"));
     }
 }

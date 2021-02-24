@@ -1,10 +1,12 @@
 package com.example.demo.model;
 
 import com.sun.istack.NotNull;
+import lombok.Builder;
 
 import javax.persistence.*;
 
 @Entity
+@Builder
 @Table(name = "todos")
 public class Todo {
     @Id

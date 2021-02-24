@@ -32,7 +32,7 @@ public class TodoListController {
             throw new BadRequestException("The content should not be empty");
         }
         Todo todoItem = new Todo(id, status, content);
-        return todoListService.save(todoItem);
+        return todoListService.update(todoItem);
     }
 
     @GetMapping("/delete")
